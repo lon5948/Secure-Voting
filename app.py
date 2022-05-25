@@ -1,9 +1,20 @@
-from flask import Flask,flash, render_template,request, redirect, url_for,jsonify
+from flask_bcrypt import Bcrypt
+from flask import Flask,flash, render_template,request, redirect, url_for,jsonify,session
 import cv2
+import mysql.connector
 import AddUser as db
 
 app = Flask(__name__)
-app.secret_key = b'zjvmolck1226341vl/vblcbvc'
+app.config['SECRET_KEY'] = b'zjvmolck1226341vl/vblcbvc'
+
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="root",
+    database="secure_voting"
+)
+cursor = db.cursor(buffered=True)
+
 
 @app.route('/')
 def landing():
@@ -11,14 +22,24 @@ def landing():
 
 @app.route("/login",methods=["POST"])
 def login():
-    [name,id,password] = [request.form['name'],request.form['id'],request.form['password']]
-    status = db.VerifyUser(id,password)
-    if(status!=1):
-        return render_template("Error.html",status=status)
-    if(request.form["id"]=="0000"):
+    account = request.form.get('account')
+    password = request.form.get('password')
+    cursor.execute("select id,password from Voter where name = %s", (account))
+    data = cursor.fetchone()
+    id = data[0]
+    if id is None:
+        error = 'Account not registered !'
+        return render_template("Error.html",erroe=error)
+    elif bcrypt.check_password_hash(data[1], password)==False:
+        error = 'Incorrect password !'
+        return render_template("Error.html",erroe=error)
+    elif id=="0000":
         return render_template("admin.html",name="Admin")
     else:
-        return redirect("/vote/"+request.form['id']+"/"+request.form['name'])
+        session.clear()
+        session['uid'] = data[0]
+        return redirect("/vote/"+"/"+account)
+        
 
 @app.route("/admin")
 def admin():

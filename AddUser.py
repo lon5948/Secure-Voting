@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import Face
 
-myclient = pymongo.MongoClient("mongodb://localhost:20000/")
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["voting"]
 mycol = mydb["voting"]
 def addVoter(name,password,id):
