@@ -1,0 +1,31 @@
+<!--<a href="/exec" class="button"> This link will invoke Parse method </a> -->
+<html>
+<body>
+<style>
+@import url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css);
+@import url(https://fonts.googleapis.com/css?family=Comfortaa);
+</style>
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+<div class="jumbotron text-center">
+  <div class="">
+    <h1>Hi {{name}},Please Select the party you want to Vote for !</h1>
+    <p style="color:#888;"></p>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <h2>Here We go !</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-sm-6 col-xs-6"> <a href="/CastVote/A/{{id}}" class="btn btn-sm animated-button victoria-one"> A</a> </div>
+    <div class="col-md-6 col-sm-6 col-xs-6"> <a href="/CastVote/B/{{id}}" class="btn btn-sm animated-button victoria-two"> B</a> </div> 
+    <div class="col-md-6 col-sm-6 col-xs-6"> <a href="/CastVote/C/{{id}}" class="btn btn-sm animated-button victoria-two"> C</a> </div> 
+    <div class="col-md-6 col-sm-6 col-xs-6"> <a href="/CastVote/D/{{id}}" class="btn btn-sm animated-button victoria-two"> D</a> </div> 
+  </div>
+</body>
+</html>

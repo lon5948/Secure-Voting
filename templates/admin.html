@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+@import url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css);
+@import url(https://fonts.googleapis.com/css?family=Comfortaa);
+</style>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+<div class="jumbotron text-center">
+
+    <div>
+        <h1>Hi {{name}} !</h1>
+        <p style="color:#888;"></p>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2>Here We go !</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-6 col-xs-6"> <a href="/results" class="btn btn-sm animated-button victoria-one">
+                Show Voting Results</a> </div>
+        <div class="col-lg-12 col-md-6 col-sm-6 col-xs-6"> <a href="/addVoter" class="btn btn-sm animated-button victoria-two">
+                Add Voter</a> </div>
+        <div class="col-lg-12 col-md-6 col-sm-6 col-xs-6"> <a href="/clear" class="btn btn-sm animated-button victoria-two">
+                Clear Database</a> </div>
+        <div class="col-lg-12 col-md-6 col-sm-6 col-xs-6"> <a href="/" class="btn btn-sm animated-button victoria-two">
+            Start Voting</a> </div>
+    </div>
+</body>
+</html>
