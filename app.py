@@ -1,86 +1,161 @@
+from unicodedata import category
 from flask_bcrypt import Bcrypt
 from flask import Flask,flash, render_template,request, redirect, url_for,jsonify,session
 import cv2
 import mysql.connector
-import AddUser as db
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = b'zjvmolck1226341vl/vblcbvc'
-
+bcrypt = Bcrypt(app)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="root",
-    database="secure_voting"
+    database="securevoting"
 )
 cursor = db.cursor(buffered=True)
 
-
 @app.route('/')
 def landing():
+    uid = session.get('id', None)
+    if uid is not None:
+        session.pop('id')
     return render_template('login.html')
 
 @app.route("/login",methods=["POST"])
 def login():
-    account = request.form.get('account')
+    id = request.form.get('id')
+    name = request.form.get('name')
     password = request.form.get('password')
-    cursor.execute("select id,password from Voter where name = %s", (account))
+    cursor.execute("select * from voter where id = %s and name = %s ", (id,name,))
     data = cursor.fetchone()
-    id = data[0]
-    if id is None:
-        error = 'Account not registered !'
-        return render_template("Error.html",erroe=error)
-    elif bcrypt.check_password_hash(data[1], password)==False:
-        error = 'Incorrect password !'
-        return render_template("Error.html",erroe=error)
-    elif id=="0000":
-        return render_template("admin.html",name="Admin")
+    if data is None:
+        error = 'Not Registered!'
+    elif bcrypt.check_password_hash(data[2], password)==False:
+        error = 'Incorrect Password!'
+    elif data[0]=="A000000000":
+        session['id'] = data[0]
+        return redirect(url_for('admin'))
     else:
-        session.clear()
-        session['uid'] = data[0]
-        return redirect("/vote/"+"/"+account)
+        session['id'] = data[0]
+        session['name'] = data[1]
+        return redirect('voter')
+    flash(error,category='danger')
+    return redirect('/')
         
+@app.route('/changePW',methods=['GET','POST'])
+def changePW():
+    if request.method == 'GET':
+        id = session.get('id')
+        if id is None:
+            return redirect('/')
+        return render_template('changePW.html')
+    if request.method == 'POST':
+        id = session.get('id')
+        password = request.form.get('password')
+        REpassword = request.form.get('re-password')
+        if password==REpassword:
+            cursor.execute("update voter set password = %s where id = %s", (bcrypt.generate_password_hash(password),id,))
+            db.commit()
+            flash("Successfully Change PassWord",category='success')
+            return redirect(url_for('voter'))
+        else:
+            flash("Re-type password doesn't match",category='danger')
+            return(redirect(url_for('changePW')))
 
-@app.route("/admin")
+@app.route("/admin",methods=["GET"])
 def admin():
-    return render_template("admin.html",name="Admin")
-    
-@app.route('/vote/<id>/<name>',methods=["GET"])
-def vote(id,name):
-    return render_template('vote.html',name=name,id=id)
+    id = session.get('id')
+    if id is None:
+        return redirect('/')
+    return render_template("admin.html")
 
+@app.route('/voter',methods=["GET"])
+def voter():
+    id = session.get('id')
+    if id is None:
+        return redirect('/')
+    name = session.get('name')
+    return render_template('voter.html',name=name)
+
+@app.route('/vote',methods=["GET"])
+def vote():
+    id = session.get('id')
+    if id is None:
+        return redirect('/')
+    cursor.execute("select done from voter where id=%s",(id,))
+    done = cursor.fetchone()[0]
+    if done == 0:
+        return render_template('vote.html')
+    else:
+        flash("Already Casted!",category='danger')
+        return redirect(url_for('voter'))
 
 @app.route('/addVoter',methods=['GET','POST'])
 def addVoter(name=None):
     if request.method == 'GET':
+        id = session.get('id')
+        if id is None:
+            return redirect('/')
         return render_template('addVoter.html')
     if request.method == 'POST':
-        status = db.addVoter(request.form['Name'],request.form['Password'],request.form['Id'])
-        if(status!="Done"):
-            return "Voter already exists"
-        if(request.form['Name'].lower=="admin"):
-            return render_template("admin.html")
+        id = request.form.get('Id')
+        name = request.form.get('Name')
+        error = ""
+        try:
+            int(id[1:10])
+            if len(id)!=10 or not id[0].isalpha():
+                error="id format error"
+        except:
+            error="id format error"
+        cursor.execute("select * from voter where id=%s",(id,))
+        existid = cursor.fetchone()
+        if existid is not None:
+            error = "Voter already exists"
+        if error == '':
+            password = id[6:10]
+            cursor.execute("""insert into voter (id,name,password,done) values (%s,%s,%s,%s)""",(id,name,bcrypt.generate_password_hash(password),0),)
+            db.commit()
+            flash("Voter has been Added in the Database!",category='success')
+            return redirect(url_for('admin'))
         else:
-            return redirect('/admin')
-
-@app.route("/CastVote/<party>/<id>")
-def addVote(party,id):
-    status = db.AddVote(id,party)
-    return render_template("Error.html",status=status,link="/")
+            flash(error,category='danger')
+            return redirect(url_for('addVoter'))
+        
+@app.route("/CastVote/<party>")
+def addVote(party):
+    id = session.get('id')
+    if id is None:
+        return redirect('/')
+    cursor.execute("update voter set done=1 where id=%s",(id,))
+    cursor.execute("insert into result (party) values (%s)",(party,))
+    db.commit()
+    flash("Successfully Casted!",category='success')
+    return redirect(url_for('voter'))
 
 @app.route("/results")
 def results():
-    result = db.result() 
-    print(result)
-    if(result=="0"):
-        return render_template("Error.html",status="All voters have not casted their votes yet",link="/admin")
-    
-    return render_template("results.html",d=result)
+    id = session.get('id')
+    if id is None:
+        return redirect('/')
+    result = {"A":0,"B":0,"C":0,"D":0}
+    cursor.execute("select * from result")
+    votes = cursor.fetchall()
+    if len(votes)==0:
+        flash("All voters have not casted their votes yet",category='danger')
+        return redirect(url_for('admin'))
+    for v in votes:
+        result[v[0]] += 1
+    return render_template("results.html",result=result)
 
 @app.route("/clear")
 def clear():
-    status = db.clearDb()
-    return render_template("Error.html",status=status,link="/addVoter")
+    id = session.get('id')
+    if id is None:
+        return redirect('/')
+    cursor.execute("truncate result")
+    flash("Database Cleared!",category='success')
+    return redirect('admin')
 
 if __name__ == '__main__':
     app.run(debug = True)

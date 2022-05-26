@@ -16,6 +16,7 @@ var chart = new CanvasJS.Chart("chartContainer", {
 	axisY2:{
 		interlacedColor: "rgba(1,77,101,.2)",
 		gridColor: "rgba(1,77,101,.1)",
+		interval: 1,
 		title: "Number of Votes"
 	},
 	data: [{
@@ -24,10 +25,10 @@ var chart = new CanvasJS.Chart("chartContainer", {
 		axisYType: "secondary",
 		color: "#014D65",
 		dataPoints: [
-			{ y: {{d["A"]}}, label: "Party A" },
-			{ y: {{d["B"]}}, label: "Party B" },
-			{ y: {{d["C"]}}, label: "Party C" },
-			{ y: {{d["D"]}}, label: "Party D" },
+			{ y: {{result["A"]}}, label: "Party A" },
+			{ y: {{result["B"]}}, label: "Party B" },
+			{ y: {{result["C"]}}, label: "Party C" },
+			{ y: {{result["D"]}}, label: "Party D" },
 		]
 	}]
 });

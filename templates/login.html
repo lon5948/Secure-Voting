@@ -11,9 +11,20 @@
         <div class="card card-signin my-5">
           <div class="card-body">
             <h5 class="card-title text-center">Start Voting</h5>
+            <div class="form-group">
+              {% for message in get_flashed_messages(with_categories=True) %}
+              <div class="alert alert-{{ message[0] }}">
+                  {{ message[1] }}
+              </div>
+              {% endfor %}
+            </div>
             <form class="form-signin" action="/login" method="POST">
               <div class="form-group">
-                <input type="text" name="account" id="account" class="form-control" placeholder="Account" required autofocus>
+                <input type="text" name="id" id="id" class="form-control" placeholder="ID" required autofocus>
+                <label></label>
+              </div>
+              <div class="form-group">
+                <input type="text" name="name" id="name" class="form-control" placeholder="Name" required autofocus>
                 <label></label>
               </div>
               <div class="form-group">

@@ -1,4 +1,3 @@
-<!--<a href="/exec" class="button"> This link will invoke Parse method </a> -->
 <html>
 <body>
 <head>
@@ -11,24 +10,24 @@
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div class="card card-signin my-5">
           <div class="card-body">
-            <h5 class="card-title text-center">Voter Registration</h5>
+            <h5 class="card-title text-center">Change PassWord</h5>
             <div class="form-group">
               {% for message in get_flashed_messages(with_categories=True) %}
               <div class="alert alert-{{ message[0] }}">
-                  {{ message[1]}}
+                  {{ message[1] }}
               </div>
               {% endfor %}
             </div>
-            <form class="form-signin" action="/addVoter" method="POST">
-              <div class="form-label-group">
-                <input type="text" name="Id" id="id" class="form-control" placeholder="Voter ID" required autofocus>
+            <form class="form-signin" action="/changePW" method="POST">
+              <div class="form-group">
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
                 <label></label>
               </div>
-              <div class="form-label-group">
-                <input type="text" name="Name"  id="name" class="form-control" placeholder="Name" required autofocus>
+              <div class="form-group">
+                <input type="password" name="re-password" id="Re-Password" class="form-control" placeholder="Retype Password Again" required>
                 <label></label>
               </div>
-              <button class="btn btn-lg btn-primary btn-block " type="submit">Register Voter</button>
+              <button class="btn btn-lg btn-primary btn-block" type="submit">Change</button>
                </form>
           </div>
         </div>
@@ -39,5 +38,4 @@
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
 </html>
