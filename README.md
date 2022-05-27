@@ -2,7 +2,7 @@
 In order to provide more secure platform for voting process.
 
 ## Step
-1. Downloads MySQL [Link](https://dev.mysql.com/downloads/installer/)
+1. Downloads MySQL -- [Link](https://dev.mysql.com/downloads/installer/)
 2. Import database(securevoting)
 3. Run app.py
 
