@@ -10,7 +10,7 @@ In order to provide more secure platform for voting process.
     
     $ pip install flask
 
-    $ pip install face_recognition
+    $ pip install boto3
     
 ## Reference
 https://github.com/manangupta12/Secured-Voting-System/
