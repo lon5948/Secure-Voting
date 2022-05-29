@@ -1,19 +1,17 @@
 # Secure-Voting
 In order to provide more secure platform for voting process.
 
+## Steps
+1. Downloads MySQL -- [Link](https://dev.mysql.com/downloads/installer/)
+2. Import database(securevoting)
+3. Run app.py
+
 ## Installation
- a web framework lets you develop web applications easily
     
     $ pip install flask
+
+    $ pip install face_recognition
     
-the official python driver that connects to and interacts with MongoDB databases
-
-    $ pip install pymongo
-    
-provides a Python API for AWS infrastructure services
-
-    $ pip install boto3
-
 ## Reference
 https://github.com/manangupta12/Secured-Voting-System/
     
