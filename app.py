@@ -174,6 +174,7 @@ def reset():
     if id is None:
         return redirect('/')
     cursor.execute("truncate voter")
+    cursor.execute("truncate result")
     Face.DeleteFaces()
     flash("Database Reset!",category='success')
     return redirect('admin')
