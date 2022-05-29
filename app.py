@@ -28,18 +28,19 @@ def login():
     id = request.form.get('id')
     name = request.form.get('name')
     password = request.form.get('password')
+    cursor.execute("select * from admin where id = %s and name = %s ", (id,name,))
+    admin = cursor.fetchone()
+    if admin is not None and bcrypt.check_password_hash(admin[2], password)==True:
+        session['id'] = admin[0]
+        return redirect(url_for('admin'))
     cursor.execute("select * from voter where id = %s and name = %s ", (id,name,))
     data = cursor.fetchone()
-    
     if data is None:
         error = 'Not Registered!'
     elif name != data[1]:
         error = 'Incorrect Name!'
     elif bcrypt.check_password_hash(data[2], password)==False:
         error = 'Incorrect Password!'
-    elif data[0]=="A000000000":
-        session['id'] = data[0]
-        return redirect(url_for('admin'))
     else:
         face = Face.VerifyUser(id)
         if face!="Correct":
@@ -164,8 +165,17 @@ def clear():
     if id is None:
         return redirect('/')
     cursor.execute("truncate result")
+    flash("Result Cleared!",category='success')
+    return redirect('admin')
+
+@app.route("/reset")
+def reset():
+    id = session.get('id')
+    if id is None:
+        return redirect('/')
+    cursor.execute("truncate voter")
     Face.DeleteFaces()
-    flash("Database Cleared!",category='success')
+    flash("Database Reset!",category='success')
     return redirect('admin')
 
 if __name__ == '__main__':

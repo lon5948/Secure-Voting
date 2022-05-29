@@ -16,24 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `result`
+-- Table structure for table `admin`
 --
 
-DROP TABLE IF EXISTS `result`;
+DROP TABLE IF EXISTS `admin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `result` (
-  `party` varchar(255) DEFAULT NULL
+CREATE TABLE `admin` (
+  `id` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `result`
+-- Dumping data for table `admin`
 --
 
-LOCK TABLES `result` WRITE;
-/*!40000 ALTER TABLE `result` DISABLE KEYS */;
-/*!40000 ALTER TABLE `result` ENABLE KEYS */;
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES ('A520520520','Admin','$2b$12$daf.6uerV3DlmSJ38fSJhetDgt6nWc3bIWjtg98URGQPUe2rfekLe');
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
