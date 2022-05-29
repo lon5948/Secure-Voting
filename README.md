@@ -7,13 +7,10 @@ In order to provide more secure platform for voting process.
 3. Run app.py
 
 ## Installation
- a web framework lets you develop web applications easily
     
     $ pip install flask
-    
-provides a Python API for AWS infrastructure services
 
-    $ pip install boto3
+    $ pip install face_recognition
     
 ## Reference
 https://github.com/manangupta12/Secured-Voting-System/
