@@ -3,6 +3,7 @@ from flask_bcrypt import Bcrypt
 from flask import Flask,flash, render_template,request, redirect, url_for,jsonify,session
 import cv2
 import mysql.connector
+import Face
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = b'zjvmolck1226341vl/vblcbvc'
@@ -29,17 +30,24 @@ def login():
     password = request.form.get('password')
     cursor.execute("select * from voter where id = %s and name = %s ", (id,name,))
     data = cursor.fetchone()
+    
     if data is None:
         error = 'Not Registered!'
+    elif name != data[1]:
+        error = 'Incorrect Name!'
     elif bcrypt.check_password_hash(data[2], password)==False:
         error = 'Incorrect Password!'
     elif data[0]=="A000000000":
         session['id'] = data[0]
         return redirect(url_for('admin'))
     else:
-        session['id'] = data[0]
-        session['name'] = data[1]
-        return redirect('voter')
+        face = Face.VerifyUser(id)
+        if face!="Correct":
+            error = face
+        else:
+            session['id'] = data[0]
+            session['name'] = data[1]
+            return redirect('voter')
     flash(error,category='danger')
     return redirect('/')
         
@@ -112,7 +120,9 @@ def addVoter(name=None):
         existid = cursor.fetchone()
         if existid is not None:
             error = "Voter already exists"
-        if error == '':
+        else:
+            error = Face.addUserFace(id)
+        if error == 'Correct':
             password = id[6:10]
             cursor.execute("""insert into voter (id,name,password,done) values (%s,%s,%s,%s)""",(id,name,bcrypt.generate_password_hash(password),0),)
             db.commit()
@@ -154,6 +164,7 @@ def clear():
     if id is None:
         return redirect('/')
     cursor.execute("truncate result")
+    Face.DeleteFaces()
     flash("Database Cleared!",category='success')
     return redirect('admin')
 
