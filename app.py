@@ -4,6 +4,7 @@ from flask import Flask,flash, render_template,request, redirect, url_for,jsonif
 import cv2
 import mysql.connector
 import Face
+import block_chain
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = b'zjvmolck1226341vl/vblcbvc'
@@ -11,10 +12,14 @@ bcrypt = Bcrypt(app)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="root",
+    password="Allen30161",
     database="securevoting"
 )
 cursor = db.cursor(buffered=True)
+
+block = block_chain.BlockChain()
+block.create_genesis_block()
+
 
 @app.route('/')
 def landing():
@@ -138,10 +143,16 @@ def addVote(party):
     id = session.get('id')
     if id is None:
         return redirect('/')
+    
+    
+    block.mine_block(id,party)
+    
     cursor.execute("update voter set done=1 where id=%s",(id,))
     cursor.execute("insert into result (party) values (%s)",(party,))
     db.commit()
-    flash("Successfully Casted!",category='success')
+    if(block.verify_blockchain()== True):
+        flash("Successfully Casted!",category='success')
+    # else :
     return redirect(url_for('voter'))
 
 @app.route("/results")
