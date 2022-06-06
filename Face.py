@@ -30,7 +30,7 @@ def VerifyUser(id):
     sub_data = id 
     path = os.path.join(datasets, sub_data)
     database = path+"/1.jpg"
-    client = boto3.client('rekognition',region_name='us-east-1',aws_access_key_id = "AKIAY54KMTMIFV6Q4VP7",aws_secret_access_key="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")
+    #client
     cap = cv2.VideoCapture(0)
     try:
         ret, webcam = cap.read()

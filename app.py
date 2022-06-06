@@ -12,7 +12,7 @@ bcrypt = Bcrypt(app)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="Allen30161",
+    password="root",
     database="securevoting"
 )
 cursor = db.cursor(buffered=True)
