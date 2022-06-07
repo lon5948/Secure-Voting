@@ -1,9 +1,11 @@
 import hashlib
+from random import vonmisesvariate
+import datetime
 import time
 
 
 class Transaction:
-    def __init__(self, voter,voting, amounts, fee, message):
+    def __init__(self, voter, voting, amounts, fee, message):
         self.voter = voter
         self.voting = voting
         # self.sender = sender
@@ -19,7 +21,7 @@ class Block:
         self.hash = ''
         self.difficulty = difficulty
         self.nonce = 0
-        self.timestamp = int(time.time())
+        self.timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         self.transactions = []
         self.miner = miner
         self.miner_rewards = miner_rewards
@@ -37,13 +39,14 @@ class BlockChain:
 
     def create_genesis_block(self):
         print("Create genesis block...")
-        new_block = Block('Hello World!', self.difficulty, 'lkm543', self.miner_rewards)
+        new_block = Block('Hello World!', self.difficulty,
+                          'lkm543', self.miner_rewards)
         new_block.hash = self.get_hash(new_block, 0)
         self.chain.append(new_block)
 
     def transaction_to_string(self, transaction):
         transaction_dict = {
-            'voter' : str(transaction.voter),
+            'voter': str(transaction.voter),
             'voting': transaction.voting,
             # 'sender': str(transaction.sender),
             # 'receiver': str(transaction.receiver),
@@ -83,12 +86,12 @@ class BlockChain:
             self.pending_transactions = []
         block.transactions = transcation_accepted
 
-
-    def mine_block(self, miner,voting):
+    def mine_block(self, miner, voting):
         start = time.process_time()
         # self.miner_rewards = voting
         last_block = self.chain[-1]
-        new_block = Block(last_block.hash, self.difficulty, miner, self.miner_rewards)
+        new_block = Block(last_block.hash, self.difficulty,
+                          miner, self.miner_rewards)
 
         new_block.miner_rewards = voting
 
@@ -102,8 +105,18 @@ class BlockChain:
             new_block.hash = self.get_hash(new_block, new_block.nonce)
 
         time_consumed = round(time.process_time() - start, 5)
-        print(f"Hash found: {new_block.hash} @ difficulty {self.difficulty}, time cost: {time_consumed}s")
+        print(
+            f"Hash found: {new_block.hash} @ difficulty {self.difficulty}, time cost: {time_consumed}s")
         self.chain.append(new_block)
+
+    def return_chain(self):
+        return self.chain
+
+    def return_hash(self, block):
+        return block.hash
+
+    def return_timestamp(self, block):
+        return block.timestamp
 
     def adjust_difficulty(self):
         if len(self.chain) % self.adjust_difficulty_blocks != 1:
@@ -113,12 +126,15 @@ class BlockChain:
         else:
             start = self.chain[-1*self.adjust_difficulty_blocks-1].timestamp
             finish = self.chain[-1].timestamp
-            average_time_consumed = round((finish - start) / (self.adjust_difficulty_blocks), 2)
+            average_time_consumed = round(
+                (finish - start) / (self.adjust_difficulty_blocks), 2)
             if average_time_consumed > self.block_time:
-                print(f"Average block time:{average_time_consumed}s. Lower the difficulty")
+                print(
+                    f"Average block time:{average_time_consumed}s. Lower the difficulty")
                 self.difficulty -= 1
             else:
-                print(f"Average block time:{average_time_consumed}s. High up the difficulty")
+                print(
+                    f"Average block time:{average_time_consumed}s. High up the difficulty")
                 self.difficulty += 1
 
     def get_balance(self, account):
@@ -141,7 +157,7 @@ class BlockChain:
 
     def verify_blockchain(self):
         previous_hash = ''
-        for idx,block in enumerate(self.chain):
+        for idx, block in enumerate(self.chain):
             if self.get_hash(block, block.nonce) != block.hash:
                 print("Error:Hash not matched!")
                 return False

@@ -1,44 +1,90 @@
 <!DOCTYPE HTML>
+
 <html>
 <head>  
-<script>
-window.onload = function () {
+	  <!-- Required meta tags -->
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
 	
-var chart = new CanvasJS.Chart("chartContainer", {
-	animationEnabled: true,
+	  <!-- Bootstrap CSS -->
 	
-	title:{
-		text:"Voting Results"
-	},
-	axisX:{
-		interval: 1
-	},
-	axisY2:{
-		interlacedColor: "rgba(1,77,101,.2)",
-		gridColor: "rgba(1,77,101,.1)",
-		interval: 1,
-		title: "Number of Votes"
-	},
-	data: [{
-		type: "bar",
-		name: "companies",
-		axisYType: "secondary",
-		color: "#014D65",
-		dataPoints: [
-			{ y: {{result["A"]}}, label: "Party A" },
-			{ y: {{result["B"]}}, label: "Party B" },
-			{ y: {{result["C"]}}, label: "Party C" },
-			{ y: {{result["D"]}}, label: "Party D" },
-		]
-	}]
-});
-chart.render();
-
-}
-</script>
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-table.css">
+	  <link rel="stylesheet" href="{{url_for('static', filename='css/Warn.css')}}">
+	  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+	  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	  <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script> 
+	  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
 <div id="chartContainer" style="height: 370px; width: 100%;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+	<script>
+		window.onload = function () {
+			
+		var chart = new CanvasJS.Chart("chartContainer", {
+			animationEnabled: true,
+			
+			title:{
+				text:"Voting Results"
+			},
+			axisX:{
+				interval: 1
+			},
+			axisY2:{
+				interlacedColor: "rgba(1,77,101,.2)",
+				gridColor: "rgba(1,77,101,.1)",
+				interval: 1,
+				title: "Number of Votes"
+			},
+			data: [{
+				type: "bar",
+				name: "companies",
+				axisYType: "secondary",
+				color: "#014D65",
+				dataPoints: [
+					{ y: {{result["A"]}}, label: "Party A" },
+					{ y: {{result["B"]}}, label: "Party B" },
+					{ y: {{result["C"]}}, label: "Party C" },
+					{ y: {{result["D"]}}, label: "Party D" },
+				]
+			}]
+		});
+		chart.render();
+		
+		}
+	</script>
+
+	<div class="row">
+        <div class="  col-xs-8">
+            <table id="myOrderTable" class="table" style=" margin-top: 15px;">
+            <thead>
+                <tr>
+                	<th scope="col">#</th>
+                    <th scope="col">Voter ID</th>
+                    <th scope="col">Vote</th>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">hash</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for block in blockchains %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ block.0 }}</td>
+                    <td>{{ block.1 }}</td>
+                    <td>{{ block.3 }}</td>
+                    <td>{{ block.2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>
