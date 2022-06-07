@@ -1,6 +1,6 @@
 #creating database
 import cv2, os
-haar_file = 'C:/Users/user/anaconda3/Lib/site-packages/cv2/data/haarcascade_frontalface_default.xml'
+haar_file = 'C:/Users/chuch/anaconda3/Lib/site-packages/cv2/data/haarcascade_frontalface_default.xml'
 datasets = 'Face'  #All the faces data will be present this folder
 #import face_recognition
 import shutil
@@ -30,7 +30,7 @@ def VerifyUser(id):
     sub_data = id 
     path = os.path.join(datasets, sub_data)
     database = path+"/1.jpg"
-    client = boto3.client('rekognition',region_name='us-east-1',aws_access_key_id = "AKIAY54KMTMIFV6Q4VP7",aws_secret_access_key="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")
+    client = boto3.client('rekognition',region_name='us-east-1',aws_access_key_id = "Access key id",aws_secret_access_key="access key")
     cap = cv2.VideoCapture(0)
     try:
         ret, webcam = cap.read()

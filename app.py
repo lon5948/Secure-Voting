@@ -12,7 +12,7 @@ bcrypt = Bcrypt(app)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="Allen30161",
+    password="root",
     database="securevoting"
 )
 cursor = db.cursor(buffered=True)
@@ -176,6 +176,7 @@ def clear():
     if id is None:
         return redirect('/')
     cursor.execute("truncate result")
+    cursor.execute("update voter set done=0")
     flash("Result Cleared!",category='success')
     return redirect('admin')
 
