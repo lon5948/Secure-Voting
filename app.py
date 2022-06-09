@@ -182,14 +182,21 @@ def addVote(party):
 
 @app.route("/results")
 def results():
+    id = session.get('id')
     for key,value in result.items():
         if value != 0:
             return render_template("results.html", result=result, blockchains=infoList)
     print(result)
     flash("All voters have not casted their votes yet", category='danger')
-    return redirect('/')
-    
-
+    cursor.execute("select * from admin where id=%s", (id,))
+    admin = cursor.fetchone()
+    if admin!=None:
+        return redirect('admin')
+    elif id != ' ':
+        return redirect('voter')
+    else:
+        return redirect('/')
+        
 @app.route("/clear")
 def clear():
     id = session.get('id')
@@ -197,9 +204,11 @@ def clear():
         return redirect('/')
     block = block_chain.BlockChain()
     block.create_genesis_block()
+    infoList = []
     for key,value in result.items():
         result[key] = 0
-    cursor.execute("update voter set done=0")
+    cursor.execute("update voter set done = 0")
+    db.commit()
     flash("Result Cleared!", category='success')
     return redirect('admin')
 
@@ -211,6 +220,7 @@ def reset():
         return redirect('/')
     block = block_chain.BlockChain()
     block.create_genesis_block()
+    infoList = []
     cursor.execute("truncate voter")
     Face.DeleteFaces()
     for key,value in result.items():
